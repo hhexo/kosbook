@@ -1,0 +1,7 @@
+[dependencies]
+pulldown-cmark = "*"
+
+[package]
+name = "kosbook"
+version = "0.1.0"
+authors = ["Dario Domizioli <dario.domizioli@gmail.com>"]
