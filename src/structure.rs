@@ -22,14 +22,14 @@ pub struct Structure {
 }
 
 impl Structure {
-    pub fn from_json(js: &str) -> Structure {
-        json::decode::<Structure>(js).unwrap()
+    pub fn from_json(js: &str) -> Result<Structure, json::DecoderError> {
+        json::decode::<Structure>(js)
     }
 }
 
 
+#[derive(Clone, PartialEq)]
 pub struct Content {
-    toc: String,
     chunks: Vec<String>
 }
 
@@ -58,12 +58,19 @@ impl Content {
 
     fn build_chunks(st: &Structure) -> Result<Vec<String>, String> {
         let mut chunks = Vec::new();
+        // Book title first...
         let book_header = 
                 r#"<div class="book_title">"#.to_string() +
                 r#"<a id="kos_book_title"></a><p class="book_title">"# +
                 &st.title +
                 "</p></div>\n\n";
             chunks.push(book_header);
+        // Then TOC...
+        match Content::build_toc(st) {
+            Ok(toc) => { chunks.push(toc); },
+            Err(e) => { return Err(e); }
+        }
+        // Then parts and chapters.
         let mut part_index = 1;
         for part in st.parts.iter() {
             let part_header = 
@@ -77,14 +84,13 @@ impl Content {
             let mut chap_index = 1;
             for chap in part.chapters.iter() {
                 let chap_header = 
-                    r#"<div class="part_title">"#.to_string() +
-                    r#"<a id="kos_ref_chap_"# +
+                    r#"# <a id="kos_ref_chap_"#.to_string() +
                     &format!("{}", part_index) +
                     "_" +
                     &format!("{}", chap_index) +
-                    r#""></a><h1>"# +
+                    r#""></a> "# +
                     &chap.title +
-                    "</h1></div>\n\n";
+                    "\n\n";
                 chunks.push(chap_header);
                 for f in chap.files.iter() {
                     let file_content = match File::open(f) {
@@ -115,17 +121,18 @@ impl Content {
     }
 
     pub fn from_structure(st: &Structure) -> Result<Content, String> {
-        let toc = Content::build_toc(st);
         let chunks = Content::build_chunks(st);
         Ok(Content {
-            toc: match toc {
-                Ok(t) => t,
-                Err(e) => { return Err(e); }
-            },
             chunks: match chunks {
                 Ok(c) => c,
                 Err(e) => { return Err(e); }
             }
+        })
+    }
+
+    pub fn to_single_string(&self) -> String {
+        self.chunks.iter().fold(String::new(), |acc, x| {
+            acc + "\n\n" + &x
         })
     }
 }

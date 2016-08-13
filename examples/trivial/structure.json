@@ -1,0 +1,22 @@
+{
+    "title": "Trivial Example",
+    "parts": [{
+        "title": "Part I",
+        "chapters": [{
+            "title": "Chapter 1",
+            "files": ["trivial.md"]
+        }, {
+            "title": "Chapter 2",
+            "files": ["trivial.md"]
+        }]
+    }, {
+        "title": "Part II",
+        "chapters": [{
+            "title": "Chapter 3",
+            "files": ["trivial.md"]
+        }, {
+            "title": "Chapter 4",
+            "files": ["trivial.md"]
+        }]
+    }]
+}
