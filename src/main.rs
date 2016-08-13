@@ -9,14 +9,16 @@ use std::env;
 
 mod structure;
 
-fn html_prologue(style: &str) -> String {
+fn html_prologue(style: &str, title: &str) -> String {
     return r#"<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="generator" content="kosbook">
-    <title></title>
-    <link rel="stylesheet" type="text/css" href=""#.to_string() +
+    <title>"#.to_string() +
+    title +
+    r#"</title>
+    <link rel="stylesheet" type="text/css" href=""# +
     style +
     r#"">
 </head>
@@ -26,9 +28,7 @@ fn html_prologue(style: &str) -> String {
 }
 
 fn html_epilogue() -> String {
-    return r#"
-</body>
-</html>"#.to_string();
+    return "\n\n</body>\n</html>".to_string();
 }
 
 fn main() {
@@ -42,6 +42,8 @@ fn main() {
     opts.optopt("o", "output", 
                 "specify output file (default: ./output.html)",
                 "FILE");
+    opts.optflag("p", "pdf",
+                 "also invoke 'wkhtmltopdf' to produce a pdf");
     opts.optopt("s", "style", 
                 "specify custom path to CSS file (default: style.css)",
                 "FILE");
@@ -52,7 +54,6 @@ fn main() {
             std::process::exit(1);
         }
     };
-
     if matches.opt_present("help") {
         let brief = format!("\nUsage: {} [options]", args[0].clone());
         println!("{}", opts.usage(&brief));
@@ -81,16 +82,15 @@ fn main() {
             std::process::exit(1);
         }
     };
-    let content = match structure::Structure::from_json(&structure_json) {
-        Ok(structure) => {
-            match structure::Content::from_structure(&structure) {
-                Ok(x) => x,
-                Err(e) => {
-                    println!("error:   {}", e);
-                    std::process::exit(1);
-                }
-            }
-        },
+    let structure = match structure::Structure::from_json(&structure_json) {
+        Ok(s) => s,
+        Err(e) => {
+            println!("error:   {}", e);
+            std::process::exit(1);
+        }
+    };
+    let content = match structure::Content::from_structure(&structure) {
+        Ok(x) => x,
         Err(e) => {
             println!("error:   {}", e);
             std::process::exit(1);
@@ -125,10 +125,12 @@ fn main() {
     if let Some(filename) = matches.opt_str("style") {
         style_file = filename;
     }
-    match File::create(output_file) {
+    match File::create(&output_file) {
         Ok(f) => {
             let mut writer = BufWriter::new(f);
-            match writer.write(html_prologue(&style_file).as_bytes()) {
+            match writer.write(
+                html_prologue(
+                    &style_file, structure.get_title()).as_bytes()) {
                 Ok(_) => (),
                 Err(e) => {
                     println!("error:   {}", e);
@@ -153,6 +155,37 @@ fn main() {
         Err(e) => {
             println!("error:   {}", e);
             std::process::exit(1);
+        }
+    }
+
+    // Finally do the PDF conversion if required
+    if matches.opt_present("pdf") {
+        let pdf_file = output_file.trim_right_matches(".html").to_string() + 
+                       ".pdf";
+        let output = std::process::Command::new("wkhtmltopdf")
+                     .arg("--page-size")
+                     .arg("A4")
+                     .arg("-T")
+                     .arg("25mm")
+                     .arg("-B")
+                     .arg("20mm")
+                     .arg("-L")
+                     .arg("15mm")
+                     .arg("-R")
+                     .arg("15mm")
+                     .arg("--footer-center")
+                     .arg("[page]")
+                     .arg("--outline-depth")
+                     .arg("2")
+                     .arg(&output_file)
+                     .arg(&pdf_file)
+                     .output();
+        match output {
+            Ok(_) => (),
+            Err(e) => {
+                println!("error:   {}", e);
+                std::process::exit(1);
+            }
         }
     }
 }

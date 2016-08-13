@@ -1,9 +1,9 @@
 @page {
     size: 21.0cm 29.7cm;
-    margin-top: 2.5cm;
-    margin-bottom: 2cm;
-    margin-left: 2cm;
-    margin-right: 2cm;
+    margin-top: 25mm;
+    margin-bottom: 20mm;
+    margin-left: 15mm;
+    margin-right: 15mm;
 }
 
 body {
@@ -11,17 +11,31 @@ body {
     font-size: 11pt;
 }
 
+div.book_author {
+    page-break-inside: avoid;
+    page-break-after: avoid;
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 0.5cm;
+}
+
 div.book_title {
     border: 2pt solid black;
     border-radius: 8pt;
     padding: 2cm 2cm 2cm 2cm;
     page-break-inside: avoid;
-    page-break-after: always;
+    page-break-after: avoid;
+    text-align: center;
+    font-size: 5em;
+    margin-bottom: 1cm;
 }
 
-.book_title p {
+div.license {
+    page-break-inside: avoid;
+    page-break-after: always;
     text-align: center;
-    font-size: 48pt;
+    font-size: 1.2em;
+    margin-bottom: 0.5cm;
 }
 
 div.part_title {
@@ -29,24 +43,27 @@ div.part_title {
     page-break-before: always;
     page-break-inside: avoid;
     page-break-after: always;
-}
-
-.part_title p {
     text-align: center;
-    font-size: 36pt;
+    font-size: 3.5em;
 }
 
 div.toc {
-    padding: 1cm 1cm 1cm 1cm;
     page-break-before: always;
     page-break-after: always;
 }
 
-.toc p {
-    text-align: left;
-    font-size: 12pt;
+.toc ul li {
+    font-size: 1.25em;
+    list-style-type: none;
+}
+
+.toc ul li ul li {
+    font-size: 0.8em;
+    list-style-type: none;
 }
 
 h1 {
+    text-align: center;
     page-break-before: always;
+    margin-bottom: 1cm;
 }

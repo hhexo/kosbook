@@ -1,21 +1,23 @@
 {
     "title": "Trivial Example",
+    "author": "Dario Domizioli",
+    "license": "Licensed under the Apache License Version 2.0",
     "parts": [{
         "title": "Part I",
         "chapters": [{
-            "title": "Chapter 1",
+            "title": "Alpha",
             "files": ["trivial.md"]
         }, {
-            "title": "Chapter 2",
+            "title": "Beta",
             "files": ["trivial.md"]
         }]
     }, {
         "title": "Part II",
         "chapters": [{
-            "title": "Chapter 3",
+            "title": "Gamma",
             "files": ["trivial.md"]
         }, {
-            "title": "Chapter 4",
+            "title": "Delta",
             "files": ["trivial.md"]
         }]
     }]
