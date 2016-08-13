@@ -97,8 +97,6 @@ impl Content {
                 r#"<a id="kos_ref_part_"# +
                 &format!("{}", part_index) +
                 r#"">"# +
-                &part_index.to_string() +
-                " " +
                 &part.title +
                 "</a></div>\n\n";
             chunks.push(part_header);
@@ -110,10 +108,6 @@ impl Content {
                     "_" +
                     &format!("{}", chap_index) +
                     r#""> "# +
-                    &part_index.to_string() +
-                    "." +
-                    &chap_index.to_string() +
-                    " " +
                     &chap.title +
                     "</a>\n\n";
                 chunks.push(chap_header);
