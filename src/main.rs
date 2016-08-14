@@ -1,3 +1,17 @@
+// Copyright 2016 Dario Domizioli
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 extern crate rustc_serialize;
 extern crate getopts;
 extern crate pulldown_cmark;
@@ -45,9 +59,9 @@ fn main() {
                 "specify output file (default: ./output.html)",
                 "FILE");
     opts.optflag("p", "pdf",
-                 "also invoke 'wkhtmltopdf' to produce a pdf");
+                 "also invoke 'wkhtmltopdf' to produce a pdf. Note that wkhtmltopdf must be in your PATH.");
     opts.optopt("r", "rules",
-                "specify the processing rules file (default: rules.json)",
+                "specify the processing rules file (default: ./rules.json)",
                 "FILE");
     opts.optopt("s", "style", 
                 "specify custom path to CSS file (default: style.css)",
@@ -60,7 +74,8 @@ fn main() {
         }
     };
     if matches.opt_present("help") {
-        let brief = format!("\nUsage: {} [options]", args[0].clone());
+        let brief = format!(
+            "\nUsage: {} [options]\n\nAll file paths must be relative to the directory the program is invoked in.", args[0].clone());
         println!("{}", opts.usage(&brief));
         return;
     }
