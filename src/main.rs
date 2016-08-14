@@ -1,6 +1,7 @@
 extern crate rustc_serialize;
 extern crate getopts;
 extern crate pulldown_cmark;
+extern crate regex;
 
 use std::io::prelude::*;
 use std::io::BufWriter;
@@ -8,6 +9,7 @@ use std::fs::File;
 use std::env;
 
 mod structure;
+mod rules;
 
 fn html_prologue(style: &str, title: &str) -> String {
     return r#"<!DOCTYPE html>
@@ -28,7 +30,7 @@ fn html_prologue(style: &str, title: &str) -> String {
 }
 
 fn html_epilogue() -> String {
-    return "\n\n</body>\n</html>".to_string();
+    return "\n\n</body>\n</html>\n".to_string();
 }
 
 fn main() {
@@ -44,6 +46,9 @@ fn main() {
                 "FILE");
     opts.optflag("p", "pdf",
                  "also invoke 'wkhtmltopdf' to produce a pdf");
+    opts.optopt("r", "rules",
+                "specify the processing rules file (default: rules.json)",
+                "FILE");
     opts.optopt("s", "style", 
                 "specify custom path to CSS file (default: style.css)",
                 "FILE");
@@ -61,6 +66,7 @@ fn main() {
     }
 
     // Collect book structure and generate initial content
+    println!("Collecting book structure...");
     let mut structure_file = "structure.json".to_string();
     if let Some(filename) = matches.opt_str("input") {
         structure_file = filename;
@@ -71,14 +77,14 @@ fn main() {
             match fread.read_to_string(&mut res) {
                 Ok(_) => (),
                 Err(_) => {
-                    println!("error:   error reading 'structure.json'.");
+                    println!("error:   error reading structure file.");
                     std::process::exit(1);
                 }
             }
             res
         },
         Err(_) => {
-            println!("error:   error opening 'structure.json'.");
+            println!("error:   error opening structure file.");
             std::process::exit(1);
         }
     };
@@ -89,7 +95,8 @@ fn main() {
             std::process::exit(1);
         }
     };
-    let content = match structure::Content::from_structure(&structure) {
+    println!("Generating in-memory content...");
+    let mut content = match structure::Content::from_structure(&structure) {
         Ok(x) => x,
         Err(e) => {
             println!("error:   {}", e);
@@ -97,14 +104,63 @@ fn main() {
         }
     };
 
-    // Process content through PRE rules
+    // Process content through rules
+    let mut rule_engine = rules::RulesEngine::new();
 
-    // TODO
+    println!("Loading rules file...");
+    let mut pre_rules_file = "rules.json".to_string();
+    if let Some(filename) = matches.opt_str("rules") {
+        pre_rules_file = filename;
+    }
+    let pre_rules_json = match File::open(pre_rules_file) {
+        Ok(mut fread) => {
+            let mut res = String::new();
+            match fread.read_to_string(&mut res) {
+                Ok(_) => (),
+                Err(_) => {
+                    println!("error:   error reading rules file.");
+                    std::process::exit(1);
+                }
+            }
+            res
+        },
+        Err(_) => {
+            println!("error:   error opening rules file.");
+            std::process::exit(1);
+        }
+    };
+    let rules = match rules::RuleSpecContainer::from_json(&pre_rules_json) {
+        Ok(x) => x,
+        Err(e) => {
+            println!("error:   {}", e);
+            std::process::exit(1);
+        }
+    };
+    println!("Applying rules...");
+    match rule_engine.apply_rules(&rules, &mut content) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("error:   {}", e);
+            std::process::exit(1);
+        }
+    }
 
+    // Substitute variables
+    println!("Substituting variables...");
+    match rule_engine.substitute_vars(&mut content) {
+        Ok(_) => (),
+        Err(e) => {
+            println!("error:   {}", e);
+            std::process::exit(1);
+        }
+    }
+    
     // Collate all processed content
+    println!("Collating...");
     let collected_string = content.to_single_string();
 
     // Render CommonMark to HTML
+    println!("Rendering to HTML...");
     let mut opts = pulldown_cmark::Options::empty();
     opts.insert(pulldown_cmark::OPTION_ENABLE_TABLES);
     opts.insert(pulldown_cmark::OPTION_ENABLE_FOOTNOTES);
@@ -112,11 +168,8 @@ fn main() {
     let p = pulldown_cmark::Parser::new_ext(&collected_string, opts);
     pulldown_cmark::html::push_html(&mut gen_html, p);
 
-    // Process html through POST rules
-
-    // TODO
-
     // Write output html, wrapped in prologue and epilogue.
+    println!("Writing output HTML file...");
     let mut output_file = "output.html".to_string();
     if let Some(filename) = matches.opt_str("output") {
         output_file = filename;
@@ -160,6 +213,7 @@ fn main() {
 
     // Finally do the PDF conversion if required
     if matches.opt_present("pdf") {
+        println!("Invoking wkhtmltopdf to create PDF file...");
         let pdf_file = output_file.trim_right_matches(".html").to_string() + 
                        ".pdf";
         let output = std::process::Command::new("wkhtmltopdf")
@@ -188,4 +242,6 @@ fn main() {
             }
         }
     }
+
+    println!("Done!");
 }

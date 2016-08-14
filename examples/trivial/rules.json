@@ -1,0 +1,8 @@
+{
+    "rules": [{
+        "name": "Substitute test comment",
+        "regex": "<!--\\s*(.*)\\s*-->",
+        "replace": "$1",
+        "storage": []
+    }]
+}

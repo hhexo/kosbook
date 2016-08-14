@@ -27,14 +27,13 @@ impl Structure {
     pub fn from_json(js: &str) -> Result<Structure, json::DecoderError> {
         json::decode::<Structure>(js)
     }
-
     pub fn get_title(&self) -> &str { &self.title }
 }
 
 
 #[derive(Clone, PartialEq)]
 pub struct Content {
-    chunks: Vec<String>
+    pub chunks: Vec<String>
 }
 
 impl Content {
