@@ -25,6 +25,8 @@ use std::env;
 mod structure;
 mod rules;
 
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 fn html_prologue(style: &str, title: &str) -> String {
     return r#"<!DOCTYPE html>
 <html>
@@ -66,6 +68,7 @@ fn main() {
     opts.optopt("s", "style", 
                 "specify custom path to CSS file (default: style.css)",
                 "FILE");
+    opts.optflag("v", "version", "print version and exit");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
         Err(f) => {
@@ -77,6 +80,10 @@ fn main() {
         let brief = format!(
             "\nUsage: {} [options]\n\nAll file paths must be relative to the directory the program is invoked in.", args[0].clone());
         println!("{}", opts.usage(&brief));
+        return;
+    }
+    if matches.opt_present("version") {
+        println!("kosbook {}\n(C) Dario Domizioli. Licensed under the Apache License Version 2.0.\n", VERSION);
         return;
     }
 
