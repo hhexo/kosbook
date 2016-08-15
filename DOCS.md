@@ -130,7 +130,7 @@ changed with a command-line option (the PDF file name is always the same as the
 HTML file name, just with a different extension).
 
 
-## The structure file
+## <a id="struct_file">The structure file</a>
 
 ### Syntax
 
@@ -218,7 +218,7 @@ JSON array.
 Also have a look at `examples/trivial/structure.json` for another example.
 
 
-## The rules file
+## <a id="rules_file">The rules file</a>
 
 ### Syntax
 
