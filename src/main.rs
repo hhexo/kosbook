@@ -78,8 +78,8 @@ fn main() {
     };
     if matches.opt_present("help") {
         let brief = format!(
-            "\nUsage: {} [options]\n\nAll file paths must be relative to the directory the program is invoked in.", args[0].clone());
-        println!("{}", opts.usage(&brief));
+            "\nUsage: {} [options]", args[0].clone());
+        println!("{}\n\nAll paths in the structure file are relative to the directory the program is invoked in.", opts.usage(&brief));
         return;
     }
     if matches.opt_present("version") {
