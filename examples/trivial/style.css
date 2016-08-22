@@ -30,7 +30,7 @@ div.book_title {
     margin-bottom: 1cm;
 }
 
-div.license {
+div.book_license {
     page-break-inside: avoid;
     page-break-after: always;
     text-align: center;

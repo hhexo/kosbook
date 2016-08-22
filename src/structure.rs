@@ -60,7 +60,7 @@ impl Content {
                 r#"<a id="kos_book_title">"# +
                 &st.title +
                 "</a></div>\n\n" +
-                r#"<div class="license">(C) "# +
+                r#"<div class="book_license">(C) "# +
                 &st.author +
                 " - " +
                 &st.license +

@@ -162,7 +162,7 @@ content in the book.
 This CommonMark content shall contain a `<div class="book_author">` HTML element
 wrapping the text in the "author" string, followed by a
 `<div class="book_title">` HTML element wrapping the text in the "title" string,
-followed by a `<div class="license">` HTML element wrapping the text in the
+followed by a `<div class="book_license">` HTML element wrapping the text in the
 "license" field.
 
 The output book shall then feature a table of contents, automatically generated
