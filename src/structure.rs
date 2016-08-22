@@ -106,12 +106,15 @@ impl Content {
         let mut part_index = 1;
         for part in st.parts.iter() {
             let part_header = 
-                r#"<div class="part_title">"#.to_string() + 
+                r#"<div class="part_"#.to_string() + // Open part div
+                &format!("{}", part_index) +
+                r#"">"# + "\n\n" +
+                r#"<div class="part_title">"# + // Part title div
                 r#"<a id="kos_ref_part_"# +
                 &format!("{}", part_index) +
                 r#"">"# +
                 &part.title +
-                "</a></div>\n\n";
+                "</a></div>\n\n"; // Close part title div
             chunks.push(part_header);
             let mut chap_index = 1;
             for chap in part.chapters.iter() {
@@ -147,6 +150,7 @@ impl Content {
                 }
                 chap_index += 1;
             }
+            chunks.push("\n\n</div>\n\n".to_string()); // Close part div
             part_index += 1;
         }
         Ok(chunks)

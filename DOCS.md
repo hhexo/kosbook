@@ -176,9 +176,10 @@ There shall be hyperlinks from each list item to the corresponding part or
 chapter in the book. Links and anchors are automatically generated.
 
 The output book shall feature parts. Each part shall start with a header, which
-is generated CommonMark content. This header shall contain a
-`<div class="part_title">` HTML element wrapping the text specified in the
-"title" field of the corresponding part JSON object. This text shall be the
+is generated CommonMark content. This header shall first open a
+`<div class="part_N">` HTML tag, where `N` is the part index; then it shall
+contain a `<div class="part_title">` HTML element wrapping the text specified in
+the "title" field of the corresponding part JSON object. This text shall be the
 anchor to which the TOC part links link to.
 
 Each part header shall be followed by the content making up the chapters within
@@ -193,6 +194,9 @@ to which the TOC chapter links link to.
 Each chapter shall then have the concatenation of the CommonMark content in all
 the files referenced by the corresponding chapter JSON object, in the "files"
 JSON array.
+
+Finally, each part shall contain a `</div>` closing element corresponding to the
+`<div class="part_N">` tag opened in the header.
 
 ### Example of the syntax
 
@@ -340,3 +344,31 @@ content, due to the empty "replace" string:
     }]
 }
 ```
+
+## Styling the output book
+
+There are only a few HTML elements that need to be styled in the output book.
+This is because the output layout is intentionally simple.
+
+The cover of the book needs styling for the following elements:
+
+- `div.book_author`
+- `div.book_title`
+- `div.book_license`
+
+The table of contents needs styling for the following elements:
+
+- `div.toc`
+- `.toc ul li` (for the part headings)
+- `.toc ul li ul li` (for the chapter headings)
+
+
+Individual parts are contained within `div.part_N` elements (with N being the
+part index) which need to be individually styled, although part titles are
+always the same and styled with the `div.part_title` element. This allows for
+example to have a different background image or color for each part, but to
+maintain the same font style for the part titles.
+
+Chapter titles are `h1` elements and need to be styled as such.
+
+Of course, any other element can be freely styled as required.

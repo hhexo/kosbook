@@ -28,6 +28,7 @@ div.book_title {
     text-align: center;
     font-size: 5em;
     margin-bottom: 1cm;
+    background-color: #fee;
 }
 
 div.book_license {
@@ -38,18 +39,13 @@ div.book_license {
     margin-bottom: 0.5cm;
 }
 
-div.part_title {
-    padding: 1cm 1cm 1cm 1cm;
-    page-break-before: always;
-    page-break-inside: avoid;
-    page-break-after: always;
-    text-align: center;
-    font-size: 3.5em;
-}
-
 div.toc {
+    border: 1pt solid black;
+    border-radius: 4pt;
     page-break-before: always;
     page-break-after: always;
+    margin-bottom: 0.5cm;
+    background-color: #ffe;
 }
 
 .toc ul li {
@@ -62,8 +58,29 @@ div.toc {
     list-style-type: none;
 }
 
+div.part_title {
+    padding: 1cm 1cm 1cm 1cm;
+    page-break-inside: avoid;
+    page-break-after: always;
+    text-align: center;
+    font-size: 3.5em;
+}
+
+div.part_1 {
+    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
+    page-break-before: always;
+    background-color: #efe;
+}
+
+div.part_2 {
+    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
+    page-break-before: always;
+    background-color: #eef;
+}
+
 h1 {
+    padding: 0.1cm 0.1cm 0.1cm 0.1cm;
     text-align: center;
     page-break-before: always;
-    margin-bottom: 1cm;
+    margin-bottom: 0.9cm;
 }
