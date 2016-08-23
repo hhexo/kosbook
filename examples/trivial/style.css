@@ -11,12 +11,21 @@ body {
     font-size: 11pt;
 }
 
+div.book_cover {
+    page-break-after: always;
+    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
+    background-color: #fee;
+    margin-bottom: 1cm;
+}
+
 div.book_author {
     page-break-inside: avoid;
-    page-break-after: avoid;
     text-align: center;
     font-size: 2.5em;
+    margin-top: 0.5cm;
     margin-bottom: 0.5cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
 }
 
 div.book_title {
@@ -24,19 +33,22 @@ div.book_title {
     border-radius: 8pt;
     padding: 2cm 2cm 2cm 2cm;
     page-break-inside: avoid;
-    page-break-after: avoid;
     text-align: center;
     font-size: 5em;
-    margin-bottom: 1cm;
-    background-color: #fee;
+    margin-top: 0.5cm;
+    margin-bottom: 0.5cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
 }
 
 div.book_license {
     page-break-inside: avoid;
-    page-break-after: always;
     text-align: center;
     font-size: 1.2em;
+    margin-top: 0.5cm;
     margin-bottom: 0.5cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
 }
 
 div.toc {
@@ -67,15 +79,17 @@ div.part_title {
 }
 
 div.part_1 {
-    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
     page-break-before: always;
+    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
     background-color: #efe;
+    margin-bottom: 0.5cm;
 }
 
 div.part_2 {
-    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
     page-break-before: always;
+    padding: 0.25cm 0.25cm 0.25cm 0.25cm;
     background-color: #eef;
+    margin-bottom: 0.5cm;
 }
 
 h1 {

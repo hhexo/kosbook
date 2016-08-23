@@ -154,12 +154,13 @@ strings shall be a relative path to a CommonMark file.
 
 The beginning of the book shall contain the information provided in the "title",
 "author" and "license" fields of the top level JSON object in the _structure
-file_.
+file_. This is the book cover.
 
 The tool shall effect this by creating some CommonMark content preceding any
 content in the book.
 
-This CommonMark content shall contain a `<div class="book_author">` HTML element
+This CommonMark content shall be wrapped within a `<div class="book_cover">` 
+HTML element which shall contain a `<div class="book_author">` HTML element
 wrapping the text in the "author" string, followed by a
 `<div class="book_title">` HTML element wrapping the text in the "title" string,
 followed by a `<div class="book_license">` HTML element wrapping the text in the
@@ -347,11 +348,12 @@ content, due to the empty "replace" string:
 
 ## Styling the output book
 
-There are only a few HTML elements that need to be styled in the output book.
-This is because the output layout is intentionally simple.
+There are only a few HTML elements that are required to be styled in the output
+book. This is because the output layout is intentionally simple.
 
 The cover of the book needs styling for the following elements:
 
+- `div.book_cover` (which contains the other three)
 - `div.book_author`
 - `div.book_title`
 - `div.book_license`
@@ -361,7 +363,6 @@ The table of contents needs styling for the following elements:
 - `div.toc`
 - `.toc ul li` (for the part headings)
 - `.toc ul li ul li` (for the chapter headings)
-
 
 Individual parts are contained within `div.part_N` elements (with N being the
 part index) which need to be individually styled, although part titles are

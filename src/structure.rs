@@ -52,19 +52,20 @@ pub struct Content {
 
 impl Content {
     fn build_title_page(st: &Structure) -> Result<String, String> {
-        let book_header = 
-                r#"<div class="book_author">"#.to_string() +
-                &st.author +
-                r#"</div>"# + 
-                r#"<div class="book_title">"# +
-                r#"<a id="kos_book_title">"# +
-                &st.title +
-                "</a></div>\n\n" +
-                r#"<div class="book_license">(C) "# +
-                &st.author +
-                " - " +
-                &st.license +
-                "</div>\n\n";
+        let book_header =
+            r#"<div class="book_cover">"#.to_string() +
+            r#"<div class="book_author">"# +
+            &st.author +
+            r#"</div>"# + 
+            r#"<div class="book_title">"# +
+            r#"<a id="kos_book_title">"# +
+            &st.title +
+            "</a></div>" +
+            r#"<div class="book_license">(C) "# +
+            &st.author +
+            " - " +
+            &st.license +
+            "</div></div>\n\n";
         Ok(book_header)
     }
 
