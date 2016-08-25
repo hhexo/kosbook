@@ -1,9 +1,15 @@
 @page {
     size: 21.0cm 29.7cm;
-    margin-top: 25mm;
-    margin-bottom: 20mm;
-    margin-left: 15mm;
-    margin-right: 15mm;
+}
+
+@media print {
+    html {
+        display: block;
+        margin: auto;
+        width: 18cm;
+        /* height, margin-top and margin-bottom are ignored by wkhtmltopdf. */
+        /* Not my fault. Top and bottom page margins are fixed at 2cm. */
+    }
 }
 
 body {
