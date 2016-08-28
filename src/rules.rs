@@ -14,7 +14,7 @@
 
 use rustc_serialize::json;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use regex;
 
 use structure;
@@ -91,18 +91,18 @@ impl RuleSpecContainer {
 struct VarVariant {
     single:     String,
     vector:     Vec<String>,
-    map_single: HashMap<String, String>,
-    map_vector: HashMap<String, Vec<String>>,
+    map_single: BTreeMap<String, String>,
+    map_vector: BTreeMap<String, Vec<String>>,
 }
 
 pub struct RulesEngine {
-    variables: HashMap<String, VarVariant>
+    variables: BTreeMap<String, VarVariant>
 }
 
 impl RulesEngine {
     pub fn new() -> RulesEngine {
         RulesEngine {
-            variables: HashMap::new()
+            variables: BTreeMap::new()
         }
     }
 
@@ -131,8 +131,8 @@ impl RulesEngine {
                         self.variables.insert(s.variable.clone(), VarVariant {
                             single: String::new(),
                             vector: Vec::new(),
-                            map_single: HashMap::new(),
-                            map_vector: HashMap::new()
+                            map_single: BTreeMap::new(),
+                            map_vector: BTreeMap::new()
                         });
                     }
                     match s.action {
@@ -186,7 +186,7 @@ impl RulesEngine {
         Ok(())
     }
 
-    fn construct_map_content(&self, m: &HashMap<String, String>) -> String {
+    fn construct_map_content(&self, m: &BTreeMap<String, String>) -> String {
         m.iter().map(|(k, v)| {
             format!("{}: {}", k, v)
         }).fold(String::new(), |acc, x| {
@@ -194,7 +194,7 @@ impl RulesEngine {
         })
     }
 
-    fn construct_mapv_content(&self, m: &HashMap<String, Vec<String>>) -> String {
+    fn construct_mapv_content(&self, m: &BTreeMap<String, Vec<String>>) -> String {
         m.iter().map(|(k, v)| {
             format!("{}: {}", k, v.iter().fold(String::new(), |acc, x| {
                 acc + " " + &x

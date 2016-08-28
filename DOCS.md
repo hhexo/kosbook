@@ -121,12 +121,14 @@ being separated by two newline characters (`\n\n`).
 If the looked up value is a _map-of-single_, then the expression (including the
 double braces) is substituted with the listing of the map entries, in the form
 `key: value`, each entry being separated by two newline characters (`\n\n`).
+Entries are sorted lexicographically by key.
 
 If the looked up value is a _map-of-vector_, then the expression (including the
 double braces) is substituted with the listing of the map entries, in the form
 `key: [LIST]`, where [LIST] is the list of string values contained in the
 vector, all separated by a single space. Each map entry is then separated by two
 newline characters (`\n\n`).
+Entries are sorted lexicographically by key.
 
 Once all variable substitutions have happened, the tool proceeds to collate all
 content into one document and renders it as HTML. The `style.css` file is
