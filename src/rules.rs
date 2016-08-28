@@ -186,22 +186,40 @@ impl RulesEngine {
         Ok(())
     }
 
+    fn construct_map_content(&self, m: &HashMap<String, String>) -> String {
+        m.iter().map(|(k, v)| {
+            format!("{}: {}", k, v)
+        }).fold(String::new(), |acc, x| {
+            acc + "\n\n" + &x
+        })
+    }
+
+    fn construct_mapv_content(&self, m: &HashMap<String, Vec<String>>) -> String {
+        m.iter().map(|(k, v)| {
+            format!("{}: {}", k, v.iter().fold(String::new(), |acc, x| {
+                acc + " " + &x
+            }))
+        }).fold(String::new(), |acc, x| {
+            acc + "\n\n" + &x
+        })
+    }
+
     pub fn substitute_vars(&self, content: &mut structure::Content) 
     -> Result<(), String>  {
-        let re_map_var = regex::Regex::new(
+        let re_keyed_var = regex::Regex::new(
             r"\{\{\s*([_0-9a-zA-Z]+)\.([_0-9a-zA-Z]+)\s*\}\}").unwrap();
-        let re_single_var = regex::Regex::new(
+        let re_plain_var = regex::Regex::new(
             r"\{\{\s*([_0-9a-zA-Z]+)\s*\}\}").unwrap();
         for mut chunk in content.chunks.iter_mut() {
-            // Try the map variables first.
-            while let Some(m) = re_map_var.captures(&chunk.clone()) {
+            // Loop until there isn't anything to substitute anymore.
+            while let Some(m) = re_keyed_var.captures(&chunk.clone()) {
                 let var_name = m.at(1).unwrap();
                 let var_key = m.at(2).unwrap();
                 match self.variables.get(var_name) {
                     Some(var) => {
                         match var.map_single.get(var_key) {
                             Some(value) => {
-                                let new_chunk = re_map_var.replace(
+                                let new_chunk = re_keyed_var.replace(
                                     &chunk, regex::NoExpand(value));
                                 // Why isn't there a String.swap()?
                                 chunk.clear();
@@ -212,8 +230,9 @@ impl RulesEngine {
                         }
                         match var.map_vector.get(var_key) {
                             Some(vector) => {
-                                let new_chunk = re_map_var.replace(
-                                    &chunk, regex::NoExpand(&vector.join("\n")));
+                                let new_chunk = re_keyed_var.replace(
+                                    &chunk, regex::NoExpand(
+                                        &vector.join("\n\n")));
                                 // Why isn't there a String.swap()?
                                 chunk.clear();
                                 chunk.push_str(&new_chunk);
@@ -235,13 +254,12 @@ impl RulesEngine {
                     }
                 }
             }
-            // Then try the non-map variables.
-            while let Some(m) = re_single_var.captures(&chunk.clone()) {
+            while let Some(m) = re_plain_var.captures(&chunk.clone()) {
                 let var_name = m.at(1).unwrap();
                 match self.variables.get(var_name) {
                     Some(var) => {
                         if !var.single.is_empty() {
-                            let new_chunk = re_map_var.replace(
+                            let new_chunk = re_plain_var.replace(
                                 &chunk, regex::NoExpand(&var.single));
                             // Why isn't there a String.swap()?
                             chunk.clear();
@@ -249,8 +267,29 @@ impl RulesEngine {
                             continue;
                         }
                         if !var.vector.is_empty() {
-                            let new_chunk = re_map_var.replace(
-                                &chunk, regex::NoExpand(&var.vector.join("\n")));
+                            let new_chunk = re_plain_var.replace(
+                                &chunk, regex::NoExpand(
+                                    &var.vector.join("\n\n")));
+                            // Why isn't there a String.swap()?
+                            chunk.clear();
+                            chunk.push_str(&new_chunk);
+                            continue;
+                        }
+                        if !var.map_single.is_empty() {
+                            let new_chunk = re_plain_var.replace(
+                                &chunk, regex::NoExpand(
+                                    &self.construct_map_content(
+                                        &var.map_single)));
+                            // Why isn't there a String.swap()?
+                            chunk.clear();
+                            chunk.push_str(&new_chunk);
+                            continue;
+                        }
+                        if !var.map_vector.is_empty() {
+                            let new_chunk = re_plain_var.replace(
+                                &chunk, regex::NoExpand(
+                                    &self.construct_mapv_content(
+                                        &var.map_vector)));
                             // Why isn't there a String.swap()?
                             chunk.clear();
                             chunk.push_str(&new_chunk);
@@ -258,7 +297,7 @@ impl RulesEngine {
                         }
                         return Err("Variable '".to_string() +
                                    &var_name +
-                                   "' is not a single value nor a vector " +
+                                   "' does not contain content " +
                                    "at the point of " +
                                    "variable substitution.");
                     },
