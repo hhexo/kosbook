@@ -66,12 +66,6 @@ impl RuleSpecContainer {
                                "Please only use underscores, digits and " +
                                "ASCII letters.");
                 }
-                if !valid_names.is_match(&s.key) {
-                    return Err("Key name '".to_string() + &s.key +
-                               "' in rule '" + &r.name + "'is invalid. " +
-                               "Please only use underscores, digits and " +
-                               "ASCII letters.");
-                }
             }
         }
         Ok(())
