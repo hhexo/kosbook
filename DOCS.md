@@ -109,14 +109,24 @@ _map-of-vector variable_. The `identifier` is used to look up the map, and the
 respectively.
 
 In the second case, the `identifier` is just used to look up the variable, which
-can be a _single_ or _vector_.
+can be a _single_, _vector_, _map-of-single_, or _map-of-vector_.
 
-In either case, if the looked up value is a _single_, its string value is
+If the value ultimately looked up is a _single_, its string value is
 substituted to the whole expression (including the double braces).
 
 If instead the looked up value is a _vector_, the expression (including the
 double braces) is substituted with the entire list of string values, with values
 being separated by two newline characters (`\n\n`).
+
+If the looked up value is a _map-of-single_, then the expression (including the
+double braces) is substituted with the listing of the map entries, in the form
+`key: value`, each entry being separated by two newline characters (`\n\n`).
+
+If the looked up value is a _map-of-vector_, then the expression (including the
+double braces) is substituted with the listing of the map entries, in the form
+`key: [LIST]`, where [LIST] is the list of string values contained in the
+vector, all separated by a single space. Each map entry is then separated by two
+newline characters (`\n\n`).
 
 Once all variable substitutions have happened, the tool proceeds to collate all
 content into one document and renders it as HTML. The `style.css` file is
